@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strconv"
@@ -28,6 +29,7 @@ func main() {
 		fmt.Println("3. Mark Task as Completed")
 		fmt.Println("4. Delete Task")
 		fmt.Println("5. Exit")
+		fmt.Println("6. Export Tasks to JSON")
 		fmt.Print("Choose an option: ")
 
 		scanner.Scan()
@@ -86,6 +88,9 @@ func main() {
 			fmt.Println("Goodbye!")
 			return
 
+		case "6":
+    		exportToJSON()
+			
 		default:
 			fmt.Println("Invalid choice.")
 		}
@@ -129,3 +134,23 @@ func saveTasks() {
 		file.WriteString(doneFlag + "|" + t.Text + "\n")
 	}
 }
+
+func exportToJSON() {
+    file, err := os.Create("tasks.json")
+    if err != nil {
+        fmt.Println("Error creating JSON file:", err)
+        return
+    }
+    defer file.Close()
+
+    encoder := json.NewEncoder(file)
+    encoder.SetIndent("", "  ") // pretty print
+
+    if err := encoder.Encode(tasks); err != nil {
+        fmt.Println("Error writing JSON:", err)
+        return
+    }
+
+    fmt.Println("Tasks exported to tasks.json!")
+}
+
