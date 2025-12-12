@@ -1,17 +1,21 @@
 # Todo CLI App
 
-A simple command-line Todo application written in Go. It allows you to add, list, and delete tasks, while automatically saving them to a text file so they persist between runs.
+A simple command-line Todo application written in Go. It allows you to add, list, complete, delete, and export tasks. Tasks are saved to a text file so they persist between runs.
 
 ## Features
 
 * Add new tasks
 * View all existing tasks
+* Mark tasks as completed
 * Delete tasks by number
+* **Export tasks to JSON (`tasks.json`)**
 * Persistent storage using a `tasks.txt` file
 
 ## How It Works
 
-The application stores tasks in memory and also writes them into `tasks.txt` so they are available the next time you run the program. When the application starts, it loads tasks from the file (if it exists).
+The application stores tasks in memory and writes them into `tasks.txt` so they are available the next time you run the program. When the application starts, it loads tasks from the file (if it exists).
+
+You can also export all tasks to a nicely formatted `tasks.json` file.
 
 ## Usage
 
@@ -27,23 +31,28 @@ The application stores tasks in memory and also writes them into `tasks.txt` so 
    Todo App
    1. Add Task
    2. List Tasks
-   3. Delete Task
-   4. Exit
+   3. Mark Task as Completed
+   4. Delete Task
+   5. Exit
+   6. Export Tasks to JSON
    ```
 
 3. Choose an option:
 
    * **Add Task**: Type your task and press Enter.
-   * **List Tasks**: Shows all tasks with numbering.
+   * **List Tasks**: Shows all tasks with status and numbering.
+   * **Mark as Completed**: Enter the number of the task to mark it done.
    * **Delete Task**: Enter the number of the task you want to delete.
+   * **Export Tasks to JSON**: Saves all tasks to `tasks.json`.
    * **Exit**: Close the application.
 
 ## File Structure
 
 ```
 .
-├── main.go       # Application source code
-└── tasks.txt     # Automatically generated task storage file
+├── main.go        # Application source code
+├── tasks.txt      # Automatically generated task storage file
+└── tasks.json     # Generated JSON export file
 ```
 
 ## Example
@@ -52,11 +61,13 @@ The application stores tasks in memory and also writes them into `tasks.txt` so 
 Todo App
 1. Add Task
 2. List Tasks
-3. Delete Task
-4. Exit
+3. Mark Task as Completed
+4. Delete Task
+5. Exit
+6. Export Tasks to JSON
 Choose an option: 1
 Enter task: Buy groceries
 Task added!
 ```
 
-Enjoy your minimal Todo CLI app!
+Enjoy your improved Todo CLI app!
