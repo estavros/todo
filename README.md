@@ -9,13 +9,19 @@ A simple command-line Todo application written in Go. It allows you to add, list
 * Mark tasks as completed
 * Delete tasks by number
 * **Export tasks to JSON (`tasks.json`)**
+* **Export tasks to Toon format (`tasks.toon`)** *(for LLM-friendly task discussion)*
 * Persistent storage using a `tasks.txt` file
 
 ## How It Works
 
 The application stores tasks in memory and writes them into `tasks.txt` so they are available the next time you run the program. When the application starts, it loads tasks from the file (if it exists).
 
-You can also export all tasks to a nicely formatted `tasks.json` file.
+You can export tasks into different formats:
+
+* **JSON** — a structured machine-readable format
+* **Toon** — a lightweight, human- and LLM-friendly text format designed for future AI-based task discussion
+
+> Note: Toon export currently exists as an internal function and is not exposed in the menu yet. It is intended for future integration with an LLM chat interface.
 
 ## Usage
 
