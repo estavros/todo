@@ -154,3 +154,33 @@ func exportToJSON() {
     fmt.Println("Tasks exported to tasks.json!")
 }
 
+func exportToToon() {
+	file, err := os.Create("tasks.toon")
+	if err != nil {
+		fmt.Println("Error creating Toon file:", err)
+		return
+	}
+	defer file.Close()
+
+	writer := bufio.NewWriter(file)
+	defer writer.Flush()
+
+	writer.WriteString("TASKS:\n")
+
+	for i, t := range tasks {
+		status := "pending"
+		if t.Done {
+			status = "done"
+		}
+
+		writer.WriteString(fmt.Sprintf(
+			"- id: %d\n  status: %s\n  text: %s\n\n",
+			i+1,
+			status,
+			t.Text,
+		))
+	}
+
+	fmt.Println("Tasks exported to tasks.toon!")
+}
+
