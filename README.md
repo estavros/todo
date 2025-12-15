@@ -16,6 +16,13 @@ A simple command-line Todo application written in Go. It allows you to add, list
 
 The application stores tasks in memory and writes them into `tasks.txt` so they are available the next time you run the program. When the application starts, it loads tasks from the file (if it exists).
 
+Each task now has:
+
+* **Text** — the description of the task
+* **Due Date** — optional, format `YYYY-MM-DD`
+* **Priority** — optional, e.g., `low`, `medium`, `high`
+* **Done status** — whether the task is completed
+
 You can export tasks into different formats:
 
 * **JSON** — a structured machine-readable format
@@ -41,6 +48,7 @@ You can export tasks into different formats:
    4. Delete Task
    5. Exit
    6. Export Tasks to JSON
+   7. Export Tasks to .toon file
    ```
 
 3. Choose an option:
@@ -50,6 +58,7 @@ You can export tasks into different formats:
    * **Mark as Completed**: Enter the number of the task to mark it done.
    * **Delete Task**: Enter the number of the task you want to delete.
    * **Export Tasks to JSON**: Saves all tasks to `tasks.json`.
+   * **Export Tasks to .toon file: Saves tasks to `tasks.toon` with due dates and priorities.
    * **Exit**: Close the application.
 
 ## File Structure
@@ -58,7 +67,8 @@ You can export tasks into different formats:
 .
 ├── main.go        # Application source code
 ├── tasks.txt      # Automatically generated task storage file
-└── tasks.json     # Generated JSON export file
+├── tasks.json     # Generated JSON export file
+└── tasks.toon     # Generated Toon export file
 ```
 
 ## Example
@@ -71,8 +81,11 @@ Todo App
 4. Delete Task
 5. Exit
 6. Export Tasks to JSON
+7. Export Tasks to .toon file
 Choose an option: 1
 Enter task: Buy groceries
+Enter due date (YYYY-MM-DD) or leave empty: 2025-12-20
+Enter priority (low,medium,high) or leave empty: high
 Task added!
 ```
 
