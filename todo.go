@@ -10,9 +10,10 @@ import (
 )
 
 type Task struct {
-	Done    bool
-	Text    string
-	DueDate string // New field for due date
+	Done     bool
+	Text     string
+	DueDate  string // Due date in YYYY-MM-DD format
+	Priority string // Priority: low, medium, high
 }
 
 var tasks []Task
@@ -47,7 +48,11 @@ func main() {
 			scanner.Scan()
 			dueDate := scanner.Text()
 
-			tasks = append(tasks, Task{Done: false, Text: taskText, DueDate: dueDate})
+			fmt.Print("Enter priority (low, medium, high) or leave empty: ")
+			scanner.Scan()
+			priority := scanner.Text()
+
+			tasks = append(tasks, Task{Done: false, Text: taskText, DueDate: dueDate, Priority: priority})
 			fmt.Println("Task added!")
 			saveTasks()
 
@@ -64,6 +69,9 @@ func main() {
 					fmt.Printf("%d. %s %s", i+1, status, t.Text)
 					if t.DueDate != "" {
 						fmt.Printf(" (Due: %s)", t.DueDate)
+					}
+					if t.Priority != "" {
+						fmt.Printf(" [Priority: %s]", t.Priority)
 					}
 					fmt.Println()
 				}
@@ -122,12 +130,17 @@ func loadTasks() {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
-		parts := strings.SplitN(line, "|", 3) // now expecting 3 parts
-		if len(parts) != 3 {
+		parts := strings.SplitN(line, "|", 4) // now expecting 4 parts
+		if len(parts) != 4 {
 			continue
 		}
 		done := parts[0] == "1"
-		tasks = append(tasks, Task{Done: done, Text: parts[1], DueDate: parts[2]})
+		tasks = append(tasks, Task{
+			Done:     done,
+			Text:     parts[1],
+			DueDate:  parts[2],
+			Priority: parts[3],
+		})
 	}
 }
 
@@ -145,7 +158,7 @@ func saveTasks() {
 		if t.Done {
 			doneFlag = "1"
 		}
-		file.WriteString(doneFlag + "|" + t.Text + "|" + t.DueDate + "\n")
+		file.WriteString(doneFlag + "|" + t.Text + "|" + t.DueDate + "|" + t.Priority + "\n")
 	}
 }
 
@@ -190,11 +203,12 @@ func exportToToon() {
 		}
 
 		writer.WriteString(fmt.Sprintf(
-			"- id: %d\n  status: %s\n  text: %s\n  due: %s\n\n",
+			"- id: %d\n  status: %s\n  text: %s\n  due: %s\n  priority: %s\n\n",
 			i+1,
 			status,
 			t.Text,
 			t.DueDate,
+			t.Priority,
 		))
 	}
 
