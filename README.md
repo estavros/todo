@@ -11,6 +11,7 @@ A simple command-line Todo application written in Go. It allows you to add, list
 * **Export tasks to JSON (`tasks.json`)**
 * **Export tasks to Toon format (`tasks.toon`)** *(for LLM-friendly task discussion)*
 * Persistent storage using a `tasks.txt` file
+* Automatic overdue detection (⚠ overdue tasks are highlighted)
 
 ## How It Works
 
@@ -29,6 +30,23 @@ You can export tasks into different formats:
 * **Toon** — a lightweight, human- and LLM-friendly text format designed for future AI-based task discussion
 
 > Note: Toon export currently exists as an internal function and is not exposed in the menu yet. It is intended for future integration with an LLM chat interface.
+
+## ⏰ Overdue Detection
+
+Tasks with a due date are automatically checked against the current date.
+
+A task is considered **overdue** if:
+- It has a due date
+- It is not marked as completed
+- The due date is before today
+
+Overdue tasks are displayed in the task list with:
+
+⚠ OVERDUE
+
+Example:
+
+3. [ ] Pay rent (Due: 2025-12-01) [Priority: high] ⚠ OVERDUE
 
 ## Usage
 
@@ -54,7 +72,7 @@ You can export tasks into different formats:
 3. Choose an option:
 
    * **Add Task**: Type your task and press Enter.
-   * **List Tasks**: Shows all tasks with status and numbering.
+   * **List Tasks**: Shows all tasks with status, due date, priority, and overdue warnings.
    * **Mark as Completed**: Enter the number of the task to mark it done.
    * **Delete Task**: Enter the number of the task you want to delete.
    * **Export Tasks to JSON**: Saves all tasks to `tasks.json`.
@@ -87,6 +105,8 @@ Enter task: Buy groceries
 Enter due date (YYYY-MM-DD) or leave empty: 2025-12-20
 Enter priority (low,medium,high) or leave empty: high
 Task added!
+
+1. [ ] Buy groceries (Due: 2025-12-20) [Priority: high] ⚠ OVERDUE
 ```
 
 Enjoy your improved Todo CLI app!
