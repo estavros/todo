@@ -12,6 +12,9 @@ A simple command-line Todo application written in Go. It allows you to add, list
 * **Export tasks to Toon format (`tasks.toon`)** *(for LLM-friendly task discussion)*
 * Persistent storage using a `tasks.txt` file
 * Automatic overdue detection (⚠ overdue tasks are highlighted)
+* **Startup reminder dashboard** showing:
+  * 🔥 Overdue tasks
+  * ⏰ Tasks due today
 * Filter tasks (overdue, due today, high priority, pending)
 * Sort tasks by due date
 
@@ -50,6 +53,25 @@ Example:
 
 3. [ ] Pay rent (Due: 2025-12-01) [Priority: high] ⚠ OVERDUE
 
+## 📢 Startup Reminder Dashboard
+
+When the application starts, it automatically scans your tasks and displays:
+
+* 🔥 **Overdue tasks**
+* ⏰ **Tasks due today**
+
+This ensures you never miss important work — even if you forget to manually open the task list.
+
+Example:
+
+🔥 OVERDUE:
+1. [ ] Pay rent (Due: 2025-12-01) [Priority: high] ⚠ OVERDUE
+
+⏰ DUE TODAY:
+2. [ ] Submit report (Due: 2025-12-08) [Priority: medium]
+
+This dashboard appears **before the main menu** every time the app launches.
+
 ## Usage
 
 1. Run the application using:
@@ -69,6 +91,7 @@ Example:
    5. Exit
    6. Export Tasks to JSON
    7. Export Tasks to .toon file
+   8. View filtered & sorted tasks
    ```
 
 3. Choose an option:
