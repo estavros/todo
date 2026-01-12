@@ -121,6 +121,101 @@ func main() {
 	}
 }
 
+/* ---------------- FILTER SYSTEM ---------------- */
+
+func filterMenu(scanner *bufio.Scanner) {
+	filtered := make([]Task, 0)
+
+	fmt.Println("\nFilter:")
+	fmt.Println("1. All")
+	fmt.Println("2. Pending")
+	fmt.Println("3. Completed")
+	fmt.Println("4. Overdue")
+	fmt.Println("5. Due Today")
+	fmt.Println("6. By Priority")
+	fmt.Print("Choose filter: ")
+	scanner.Scan()
+	f := scanner.Text()
+
+	today := time.Now().Format("2006-01-02")
+
+	for _, t := range tasks {
+		switch f {
+		case "1":
+			filtered = append(filtered, t)
+		case "2":
+			if !t.Done {
+				filtered = append(filtered, t)
+			}
+		case "3":
+			if t.Done {
+				filtered = append(filtered, t)
+			}
+		case "4":
+			if isOverdue(t) {
+				filtered = append(filtered, t)
+			}
+		case "5":
+			if t.DueDate == today {
+				filtered = append(filtered, t)
+			}
+		case "6":
+			fmt.Print("Enter priority (low, medium, high): ")
+			scanner.Scan()
+			p := scanner.Text()
+			if strings.EqualFold(t.Priority, p) {
+				filtered = append(filtered, t)
+			}
+		}
+	}
+
+	fmt.Println("\nSort by:")
+	fmt.Println("1. ID")
+	fmt.Println("2. Due date")
+	fmt.Println("3. Priority")
+	fmt.Print("Choose sort: ")
+	scanner.Scan()
+	s := scanner.Text()
+
+	switch s {
+	case "2":
+		sort.Slice(filtered, func(i, j int) bool {
+			return filtered[i].DueDate < filtered[j].DueDate
+		})
+	case "3":
+		sort.Slice(filtered, func(i, j int) bool {
+			return priorityRank(filtered[i]) > priorityRank(filtered[j])
+		})
+	}
+
+	printTasks(filtered)
+}
+
+func priorityRank(t Task) int {
+	switch strings.ToLower(t.Priority) {
+	case "high":
+		return 3
+	case "medium":
+		return 2
+	case "low":
+		return 1
+	}
+	return 0
+}
+
+func isOverdue(t Task) bool {
+	if t.Done || t.DueDate == "" {
+		return false
+	}
+	d, err := time.Parse("2006-01-02", t.DueDate)
+	if err != nil {
+		return false
+	}
+	return d.Before(time.Now())
+}
+
+/* ---------------- DISPLAY ---------------- */
+
 func printTasks(list []Task) {
 	if len(list) == 0 {
 		fmt.Println("No tasks.")
@@ -129,11 +224,13 @@ func printTasks(list []Task) {
 
 	for _, t := range list {
 		status := "[ ]"
+		color := Yellow
 		if t.Done {
 			status = "[x]"
+			color = Green
 		}
 
-		fmt.Printf("#%d %s %s", t.ID, status, t.Text)
+		fmt.Printf("%s#%d %s %s", color, t.ID, status, t.Text)
 
 		if t.DueDate != "" {
 			fmt.Printf(" (Due: %s)", t.DueDate)
@@ -142,11 +239,13 @@ func printTasks(list []Task) {
 			fmt.Printf(" [Priority: %s]", t.Priority)
 		}
 		if isOverdue(t) {
-			fmt.Print(Red + " ⚠ OVERDUE" + Reset)
+			fmt.Print(Red + " ⚠ OVERDUE")
 		}
-		fmt.Println()
+		fmt.Println(Reset)
 	}
 }
+
+/* ---------------- CORE ---------------- */
 
 func markDoneByID(id int) bool {
 	for i := range tasks {
@@ -168,7 +267,7 @@ func deleteByID(id int) bool {
 	return false
 }
 
-// ---------- FILE HANDLING ----------
+/* ---------------- FILE HANDLING ---------------- */
 
 func loadTasks() {
 	file, err := os.Open(tasksFile)
@@ -180,23 +279,13 @@ func loadTasks() {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		parts := strings.SplitN(scanner.Text(), "|", 5)
-
 		var t Task
 
-		if len(parts) == 4 {
-			// legacy format
-			t.ID = nextID
-			t.Done = parts[0] == "1"
-			t.Text = parts[1]
-			t.DueDate = parts[2]
-			t.Priority = parts[3]
-		} else {
-			t.ID, _ = strconv.Atoi(parts[0])
-			t.Done = parts[1] == "1"
-			t.Text = parts[2]
-			t.DueDate = parts[3]
-			t.Priority = parts[4]
-		}
+		t.ID, _ = strconv.Atoi(parts[0])
+		t.Done = parts[1] == "1"
+		t.Text = parts[2]
+		t.DueDate = parts[3]
+		t.Priority = parts[4]
 
 		if t.ID >= nextID {
 			nextID = t.ID + 1
@@ -239,4 +328,8 @@ func exportToToon() {
 			t.ID, status, t.Text, t.DueDate, t.Priority)
 	}
 	fmt.Println("Tasks exported to tasks.toon!")
+}
+
+func showStartupDashboard() {
+	fmt.Println(Green + "Loaded", len(tasks), "tasks." + Reset)
 }
